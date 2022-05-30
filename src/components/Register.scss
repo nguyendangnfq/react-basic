@@ -1,0 +1,20 @@
+.register-ctn {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+
+    &__register-form {
+        margin: 0 auto;
+        padding: 2rem 4rem;
+        width: 500px;
+        height: fit-content;
+
+        border: 1px solid #ccc;
+        border-radius: 8px;
+
+        &__form-title {
+            text-align: center;
+        }
+    }
+}
