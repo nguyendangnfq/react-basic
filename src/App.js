@@ -1,5 +1,6 @@
-import Register from "./components/Register.jsx";
 import "./App.scss";
+
+import { Register } from "./containers";
 
 function App() {
   return (

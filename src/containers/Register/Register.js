@@ -1,11 +1,26 @@
-import { Button, Form, Input, Select, Typography } from "antd";
-import React from "react";
+import { Button, Form, Input, message, Select, Typography } from "antd";
+import React, { useContext, useEffect, useState } from "react";
+import { GlobalDataContext } from "../../components/GlobalDataProvider";
 import "./Register.scss";
 const { Option } = Select;
 const { Title } = Typography;
 
 const Register = () => {
   const [form] = Form.useForm();
+  const status = useContext(GlobalDataContext);
+  const [loading, setLoading] = useState(false);
+  const [vals, setVals] = useState("");
+  console.log(status);
+
+  useEffect(() => {
+    if (loading) {
+      setTimeout(() => {
+        setLoading(false);
+
+        console.log(JSON.stringify(vals));
+      }, 2000);
+    }
+  }, [loading]);
 
   const prefixSelector = (
     <Form.Item name="prefix" noStyle>
@@ -14,15 +29,27 @@ const Register = () => {
           width: 70,
         }}
       >
-        <Option value="86">+84</Option>
-        <Option value="87">+87</Option>
+        <Option value="84">+84</Option>
+        <Option value="01">+01</Option>
       </Select>
     </Form.Item>
   );
 
   const onFinish = (values) => {
-    console.log(JSON.stringify(values));
+    if (status === "200" || status === "201" || status === "204") {
+      setTimeout(() => {
+        message.success("Register Successfull!");
+      }, 2000);
+      setLoading(true);
+      setVals(values);
+    } else {
+      setTimeout(() => {
+        message.error("Register Failed!");
+      }, 2000);
+      setLoading(true);
+    }
   };
+
   return (
     <div className="register-ctn">
       <div className="register-ctn__register-form">
@@ -32,8 +59,7 @@ const Register = () => {
           name="register"
           onFinish={onFinish}
           initialValues={{
-            residence: ["zhejiang", "hangzhou", "xihu"],
-            prefix: "86",
+            prefix: "84",
           }}
           scrollToFirstError
         >
@@ -133,7 +159,7 @@ const Register = () => {
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" loading={loading}>
               Register
             </Button>
           </Form.Item>
