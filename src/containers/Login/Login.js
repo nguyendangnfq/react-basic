@@ -1,15 +1,20 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Form, Input, message, Typography } from "antd";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { Username } from "../../components";
 import { GlobalDataContext } from "../../components/GlobalDataProvider";
 import "./Login.scss";
+import Password from "../../components/Password/Password";
 
 const { Title } = Typography;
 
 const Login = () => {
-  const [loading, setLoading] = useState(false);
+  const [form] = Form.useForm();
   const vals = useContext(GlobalDataContext);
+
+  const loading = vals.loading;
+  const setLoading = vals.setLoading;
 
   useEffect(() => {
     if (loading) {
@@ -20,6 +25,7 @@ const Login = () => {
   }, [loading]);
 
   const onFinish = (values) => {
+    console.log(values);
     if (
       values.username === vals.userInfo.username &&
       values.password === vals.userInfo.password
@@ -27,11 +33,12 @@ const Login = () => {
       setLoading(true);
       setTimeout(() => {
         message.success("Login successfull!");
+        form.resetFields();
       }, 2000);
     } else {
       setLoading(true);
       setTimeout(() => {
-        message.error("Login Failed!");
+        message.error("Login failed! Try again later");
       }, 2000);
     }
   };
@@ -44,37 +51,22 @@ const Login = () => {
           remember: true,
         }}
         onFinish={onFinish}
+        form={form}
       >
         <Title className="login-ctn__login-form__form-title">Login</Title>
-        <Form.Item
-          name="username"
-          rules={[
-            {
-              required: true,
-              message: "Please input your Username!",
-            },
-          ]}
-        >
-          <Input
-            prefix={<UserOutlined className="site-form-item-icon" />}
-            placeholder="Username"
-          />
-        </Form.Item>
-        <Form.Item
-          name="password"
-          rules={[
-            {
-              required: true,
-              message: "Please input your Password!",
-            },
-          ]}
-        >
-          <Input
-            prefix={<LockOutlined className="site-form-item-icon" />}
-            type="password"
-            placeholder="Password"
-          />
-        </Form.Item>
+
+        <Username
+          label={""}
+          prefix={<UserOutlined className="site-form-item-icon" />}
+          placeholder="Username"
+        />
+
+        <Password
+          prefix={<LockOutlined className="site-form-item-icon" />}
+          placeholder="Password"
+          hasFeedback={null}
+        />
+
         <Form.Item>
           <Form.Item name="remember" valuePropName="checked" noStyle>
             <Checkbox>Remember me</Checkbox>

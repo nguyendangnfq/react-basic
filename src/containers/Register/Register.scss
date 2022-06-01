@@ -18,8 +18,10 @@
             text-align: center;
         }
     }
-}
 
-.login-link {
-    float: right;
+    & .ant-form-item-control-input-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
 }

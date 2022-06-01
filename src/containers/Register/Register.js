@@ -1,16 +1,21 @@
 import { Button, Form, Input, message, Select, Typography } from "antd";
-import React, { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Email, Nickname, Phone, Username } from "../../components";
 import { GlobalDataContext } from "../../components/GlobalDataProvider";
 import "./Register.scss";
+import Password from "../../components/Password/Password";
+import ConfirmPassword from "../../components/Password/ConfirmPassword";
 const { Option } = Select;
 const { Title } = Typography;
 
 const Register = () => {
   const [form] = Form.useForm();
   const vals = useContext(GlobalDataContext);
-  const [loading, setLoading] = useState(false);
-  console.log(vals);
+
+  const navigate = useNavigate();
+  const loading = vals.loading;
+  const setLoading = vals.setLoading;
   useEffect(() => {
     if (loading) {
       setTimeout(() => {
@@ -41,6 +46,8 @@ const Register = () => {
       setTimeout(() => {
         message.success("Register Successfull!");
         console.log(JSON.stringify(values));
+        form.resetFields();
+        navigate("/");
       }, 2000);
       setLoading(true);
     } else {
@@ -67,97 +74,18 @@ const Register = () => {
           <Title className="register-ctn__register-form__form-title">
             Register
           </Title>
-          <Form.Item
-            name="email"
-            label="E-mail"
-            rules={[
-              {
-                type: "email",
-                message: "The input is not valid E-mail!",
-              },
-              {
-                required: true,
-                message: "Please input your E-mail!",
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
 
-          <Form.Item
-            name="password"
-            label="Password"
-            rules={[
-              {
-                required: true,
-                message: "Please input your password!",
-              },
-            ]}
-            hasFeedback
-          >
-            <Input.Password />
-          </Form.Item>
+          <Email />
 
-          <Form.Item
-            name="confirm"
-            label="Confirm Password"
-            dependencies={["password"]}
-            hasFeedback
-            rules={[
-              {
-                required: true,
-                message: "Please confirm your password!",
-              },
-              ({ getFieldValue }) => ({
-                validator(_, value) {
-                  if (!value || getFieldValue("password") === value) {
-                    return Promise.resolve();
-                  }
+          <Username label="Username" />
 
-                  return Promise.reject(
-                    new Error(
-                      "The two passwords that you entered do not match!"
-                    )
-                  );
-                },
-              }),
-            ]}
-          >
-            <Input.Password />
-          </Form.Item>
+          <Password label="Password" hasFeedback="hasFeedback" />
 
-          <Form.Item
-            name="nickname"
-            label="Nickname"
-            tooltip="What do you want others to call you?"
-            rules={[
-              {
-                required: true,
-                message: "Please input your nickname!",
-                whitespace: true,
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
+          <ConfirmPassword />
 
-          <Form.Item
-            name="phone"
-            label="Phone Number"
-            rules={[
-              {
-                required: true,
-                message: "Please input your phone number!",
-              },
-            ]}
-          >
-            <Input
-              addonBefore={prefixSelector}
-              style={{
-                width: "100%",
-              }}
-            />
-          </Form.Item>
+          <Nickname />
+
+          <Phone />
 
           <Form.Item className="register-ctn__register-form__btn-ctn">
             <Button type="primary" htmlType="submit" loading={loading}>

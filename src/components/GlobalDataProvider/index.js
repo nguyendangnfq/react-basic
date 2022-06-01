@@ -3,17 +3,17 @@ import userApi from "../../api/user";
 
 const GlobalDataContext = createContext();
 const GlobalDataProvider = ({ children }) => {
+  const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("");
   const [userInfo, setUserInfo] = useState({});
-  const propsValues = { status, userInfo };
+  const propsValues = { status, userInfo, loading, setLoading };
 
   const fetchUserdata = async () => {
     const userStatus = await userApi.register();
     const userInfo = await userApi.login();
-    // console.log(userStatus);
-    console.log(userInfo);
     setStatus(userStatus.status);
     setUserInfo({ ...userInfo });
+    console.log(userStatus, userInfo);
   };
 
   useEffect(() => {
