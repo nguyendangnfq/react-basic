@@ -8,6 +8,17 @@ const userApi = {
       }, 1000);
     });
   },
+
+  login: () => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          username: "nguyendang127",
+          password: "123456",
+        });
+      }, 1000);
+    });
+  },
 };
 
 export default userApi;

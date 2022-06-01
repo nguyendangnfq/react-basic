@@ -1,5 +1,6 @@
 import { Button, Form, Input, message, Select, Typography } from "antd";
 import React, { useContext, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { GlobalDataContext } from "../../components/GlobalDataProvider";
 import "./Register.scss";
 const { Option } = Select;
@@ -7,17 +8,13 @@ const { Title } = Typography;
 
 const Register = () => {
   const [form] = Form.useForm();
-  const status = useContext(GlobalDataContext);
+  const vals = useContext(GlobalDataContext);
   const [loading, setLoading] = useState(false);
-  const [vals, setVals] = useState("");
-  console.log(status);
-
+  console.log(vals);
   useEffect(() => {
     if (loading) {
       setTimeout(() => {
         setLoading(false);
-
-        console.log(JSON.stringify(vals));
       }, 2000);
     }
   }, [loading]);
@@ -36,12 +33,16 @@ const Register = () => {
   );
 
   const onFinish = (values) => {
-    if (status === "200" || status === "201" || status === "204") {
+    if (
+      vals.status === "200" ||
+      vals.status === "201" ||
+      vals.status === "204"
+    ) {
       setTimeout(() => {
         message.success("Register Successfull!");
+        console.log(JSON.stringify(values));
       }, 2000);
       setLoading(true);
-      setVals(values);
     } else {
       setTimeout(() => {
         message.error("Register Failed!");
@@ -158,10 +159,14 @@ const Register = () => {
             />
           </Form.Item>
 
-          <Form.Item>
+          <Form.Item className="register-ctn__register-form__btn-ctn">
             <Button type="primary" htmlType="submit" loading={loading}>
               Register
             </Button>
+
+            <Link to="/" className="login-link">
+              Login Now
+            </Link>
           </Form.Item>
         </Form>
       </div>

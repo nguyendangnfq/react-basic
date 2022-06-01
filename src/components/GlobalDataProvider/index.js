@@ -3,11 +3,17 @@ import userApi from "../../api/user";
 
 const GlobalDataContext = createContext();
 const GlobalDataProvider = ({ children }) => {
-  const [value, setValue] = useState("");
+  const [status, setStatus] = useState("");
+  const [userInfo, setUserInfo] = useState({});
+  const propsValues = { status, userInfo };
 
   const fetchUserdata = async () => {
-    const userData = await userApi.register();
-    setValue(userData.status);
+    const userStatus = await userApi.register();
+    const userInfo = await userApi.login();
+    // console.log(userStatus);
+    console.log(userInfo);
+    setStatus(userStatus.status);
+    setUserInfo({ ...userInfo });
   };
 
   useEffect(() => {
@@ -15,7 +21,7 @@ const GlobalDataProvider = ({ children }) => {
   }, []);
 
   return (
-    <GlobalDataContext.Provider value={value}>
+    <GlobalDataContext.Provider value={propsValues}>
       {children}
     </GlobalDataContext.Provider>
   );
