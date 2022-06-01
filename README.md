@@ -1,3 +1,7 @@
-# This is a homework from NFQ
+# React-basic lesson by NFQ 
 
-## Register-Form by ANTD 
+## Setup
+Follow below steps to run project
+1. Clone this repo
+2. Run ```npm i``` command to install dependencies
+3. Execute ```npm start``` command to run the project
