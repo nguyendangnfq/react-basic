@@ -1,46 +1,39 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Checkbox, Form, Input, message, Typography } from "antd";
-import React, { useContext, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Button, Checkbox, Form, message, Typography } from "antd";
+import React, { useContext } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Username } from "../../components";
 import { GlobalDataContext } from "../../components/GlobalDataProvider";
 import "./Login.scss";
 import Password from "../../components/Password/Password";
+import userApi from "../../api/user";
 
 const { Title } = Typography;
 
 const Login = () => {
   const [form] = Form.useForm();
-  const vals = useContext(GlobalDataContext);
-
-  const loading = vals.loading;
-  const setLoading = vals.setLoading;
-
-  useEffect(() => {
-    if (loading) {
-      setTimeout(() => {
-        setLoading(false);
-      }, 2000);
+  const { loading, setLoading, setToken, setUserInfo } =
+    useContext(GlobalDataContext);
+  const navigate = useNavigate();
+  const saveToken = async (data) => {
+    setLoading(true);
+    try {
+      const userInfo = await userApi.login(data);
+      console.log(userInfo);
+      setLoading(false);
+      setToken(userInfo.token);
+      setUserInfo(userInfo.role);
+      message.success("Login successfull");
+      localStorage.setItem("token", userInfo.token);
+      navigate(`/${userInfo.id}`);
+    } catch (error) {
+      setLoading(false);
+      message.error("Login Failed! Please try again later");
     }
-  }, [loading]);
+  };
 
   const onFinish = (values) => {
-    console.log(values);
-    if (
-      values.username === vals.userInfo.username &&
-      values.password === vals.userInfo.password
-    ) {
-      setLoading(true);
-      setTimeout(() => {
-        message.success("Login successfull!");
-        form.resetFields();
-      }, 2000);
-    } else {
-      setLoading(true);
-      setTimeout(() => {
-        message.error("Login failed! Try again later");
-      }, 2000);
-    }
+    saveToken(values);
   };
   return (
     <div className="login-ctn">

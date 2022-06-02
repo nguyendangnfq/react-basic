@@ -6,56 +6,39 @@ import { GlobalDataContext } from "../../components/GlobalDataProvider";
 import "./Register.scss";
 import Password from "../../components/Password/Password";
 import ConfirmPassword from "../../components/Password/ConfirmPassword";
+import userApi from "../../api/user";
 const { Option } = Select;
 const { Title } = Typography;
 
 const Register = () => {
   const [form] = Form.useForm();
-  const vals = useContext(GlobalDataContext);
+  const { loading, setLoading } = useContext(GlobalDataContext);
 
   const navigate = useNavigate();
-  const loading = vals.loading;
-  const setLoading = vals.setLoading;
-  useEffect(() => {
-    if (loading) {
-      setTimeout(() => {
-        setLoading(false);
-      }, 2000);
-    }
-  }, [loading]);
 
-  const prefixSelector = (
-    <Form.Item name="prefix" noStyle>
-      <Select
-        style={{
-          width: 70,
-        }}
-      >
-        <Option value="84">+84</Option>
-        <Option value="01">+01</Option>
-      </Select>
-    </Form.Item>
-  );
+  const handleRegister = async (values) => {
+    const status = await userApi.register();
+    const name = "status";
+    console.log(status[name]);
+    if (
+      status[name] === "200" ||
+      status[name] === "201" ||
+      status[name] === "204"
+    ) {
+      form.resetFields();
+      message.success("Register Successfull!");
+      console.log(JSON.stringify(values));
+      setLoading(false);
+      navigate("/");
+    } else {
+      message.error("Register Failed!");
+      setLoading(false);
+    }
+  };
 
   const onFinish = (values) => {
-    if (
-      vals.status === "200" ||
-      vals.status === "201" ||
-      vals.status === "204"
-    ) {
-      setTimeout(() => {
-        message.success("Register Successfull!");
-        console.log(JSON.stringify(values));
-        form.resetFields();
-        navigate("/");
-      }, 2000);
-      setLoading(true);
-    } else {
-      setTimeout(() => {
-        message.error("Register Failed!");
-      }, 2000);
-      setLoading(true);
-    }
+    setLoading(true);
+    handleRegister(values);
   };
 
   return (
@@ -92,7 +75,7 @@ const Register = () => {
               Register
             </Button>
 
-            <Link to="/" className="login-link">
+            <Link to="/login" className="login-link">
               Login Now
             </Link>
           </Form.Item>
