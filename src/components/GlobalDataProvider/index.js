@@ -5,6 +5,7 @@ const GlobalDataProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState("");
   const [userInfo, setUserInfo] = useState({});
+  const [animalInfo, setAnimalInfo] = useState([]);
   const propsValues = {
     loading,
     setLoading,
@@ -12,10 +13,9 @@ const GlobalDataProvider = ({ children }) => {
     setToken,
     userInfo,
     setUserInfo,
+    animalInfo,
+    setAnimalInfo,
   };
-
-  console.log(token);
-  console.log(userInfo);
 
   return (
     <GlobalDataContext.Provider value={propsValues}>

@@ -1,0 +1,12 @@
+.setting-ctn {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    &__table {
+        height: 70%;
+        padding: 0 10rem;
+    }
+}

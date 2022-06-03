@@ -25,6 +25,7 @@ const Login = () => {
       setUserInfo(userInfo.role);
       message.success("Login successfull");
       localStorage.setItem("token", userInfo.token);
+      localStorage.setItem("role", userInfo.role);
       navigate(`/${userInfo.id}`);
     } catch (error) {
       setLoading(false);

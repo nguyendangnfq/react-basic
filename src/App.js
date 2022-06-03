@@ -12,8 +12,7 @@ import {
 import { GlobalDataContext } from "./components/GlobalDataProvider";
 import { useContext } from "react";
 function App() {
-  const { userInfo } = useContext(GlobalDataContext);
-  console.log(userInfo);
+  const userInfo = localStorage.getItem("role");
   return (
     <div className="App">
       <Routes>
