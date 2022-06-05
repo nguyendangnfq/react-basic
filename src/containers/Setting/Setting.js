@@ -1,4 +1,4 @@
-import { Button, Space, Table, Tag, Typography } from "antd";
+import { Button, Popconfirm, Space, Table, Tag, Typography } from "antd";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { animalApi } from "../../api/animal";
@@ -18,21 +18,46 @@ const Setting = () => {
     });
   }, []);
 
+  // ----------Edit Animal----------->
   const handleClickEdit = (e) => {
     console.log(e);
+    setIsModalVisible(true);
+    // let editedAnimal = e.id;
+    // let animalIndex = animals.findIndex((item) => item.id === editedAnimal);
+
+    // if (animalIndex >= 1) {
+    //   setAnimals(animals.splice(animalIndex, 1, editedAnimal));
+    // }
   };
 
+  // -------- Delete Animal --------->
   const handleClickDelete = (e) => {
-    console.log(e);
+    console.log(e.id);
+    animalApi.deleteAniamal(e.id);
+    setAnimals(animals.filter((item) => item.id !== e.id));
   };
 
-  const handleViewModal = (e) => {
-    console.log(e);
+  const handleOpenModal = (e) => {
     setIsModalVisible(true);
   };
 
-  const handleOk = () => {
+  //------- Create New Animal ------->
+  const handleCreate = (values) => {
     setIsModalVisible(false);
+
+    console.log(values);
+    const newData = {
+      id: data.length + 1,
+      name: values.name,
+      age: values.age,
+      type: values.type,
+      createdAt: moment(values.createdAt).format("MM/DD/YYYY HH:mm A"),
+    };
+
+    const newAnimals = [...animals];
+    newAnimals.push(newData);
+    setAnimals(newAnimals);
+    animalApi.postAniamal(newData);
   };
 
   const handleCancel = () => {
@@ -42,28 +67,17 @@ const Setting = () => {
   const data = animals.map((item, index) => {
     return {
       key: index,
-      id: item.id,
       createdAt: moment(item.createdAt).format("MM/DD/YYYY HH:mm A"),
-      name: item.name,
-      type: item.type,
-      age: item.age,
+      ...item,
     };
   });
-  console.log(data);
+  // console.log(data);
   const columns = [
     {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      render: (text, data) => (
-        <Text
-          onClick={() => {
-            handleViewModal(data);
-          }}
-        >
-          {text}
-        </Text>
-      ),
+      render: (text, data) => <Text>{text}</Text>,
     },
     {
       title: "Age",
@@ -123,14 +137,17 @@ const Setting = () => {
           <Button type="primary" ghost onClick={() => handleClickEdit(data)}>
             Edit
           </Button>
-          <Button
-            danger
-            onClick={() => {
+          <Popconfirm
+            title="Are you sure？"
+            onConfirm={() => {
               handleClickDelete(data);
             }}
+            onCancel={() => console.log("nothing")}
+            okText="Yes"
+            cancelText="No"
           >
-            Delete
-          </Button>
+            <Button danger>Delete</Button>
+          </Popconfirm>
         </Space>
       ),
     },
@@ -139,9 +156,10 @@ const Setting = () => {
   return (
     <div className="setting-ctn">
       <ModalPopUp
+        handleClickEdit={handleClickEdit}
         isModalVisible={isModalVisible}
         handleCancel={handleCancel}
-        handleOk={handleOk}
+        onCreate={handleCreate}
         setIsModalVisible={setIsModalVisible}
       />
       <Table
@@ -149,8 +167,18 @@ const Setting = () => {
         columns={columns}
         dataSource={data}
         pagination={{ pageSize: 7 }}
+        footer={() => (
+          <Button
+            onClick={() => {
+              handleOpenModal();
+            }}
+            style={{ width: "100%" }}
+            type="primary"
+          >
+            Add
+          </Button>
+        )}
       />
-      {/* <Button>Add</Button> */}
     </div>
   );
 };
