@@ -5,6 +5,7 @@ import Nickname from "./Nickname/Nickname";
 import Password from "./Password/Password";
 import ConfirmPassword from "./Password/ConfirmPassword";
 import ModalPopUp from "./ModalPopUp/ModalPopUp";
+import ModalEdit from "./ModalPopUp/ModalEdit";
 
 export {
   ModalPopUp,
@@ -14,4 +15,5 @@ export {
   Nickname,
   Password,
   ConfirmPassword,
+  ModalEdit,
 };

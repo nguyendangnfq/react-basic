@@ -3,13 +3,14 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { animalApi } from "../../api/animal";
 import "./Setting.scss";
-import { ModalPopUp } from "../../components";
+import { ModalPopUp, ModalEdit } from "../../components";
 
 const { Text } = Typography;
 
 const Setting = () => {
   const [animals, setAnimals] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   useEffect(() => {
     animalApi.getAniamal();
     animalApi.getAniamal().then((result) => {
@@ -19,9 +20,9 @@ const Setting = () => {
   }, []);
 
   // ----------Edit Animal----------->
-  const handleClickEdit = (e) => {
-    console.log(e);
-    setIsModalVisible(true);
+  const handleClickEdit = (values) => {
+    console.log(values);
+    setIsVisible(true);
     // let editedAnimal = e.id;
     // let animalIndex = animals.findIndex((item) => item.id === editedAnimal);
 
@@ -62,6 +63,7 @@ const Setting = () => {
 
   const handleCancel = () => {
     setIsModalVisible(false);
+    setIsVisible(false);
   };
 
   const data = animals.map((item, index) => {
@@ -85,7 +87,7 @@ const Setting = () => {
       key: "age",
     },
     {
-      title: "Create At",
+      title: "Created At",
       dataIndex: "createdAt",
       key: "createdAt",
     },
@@ -156,11 +158,16 @@ const Setting = () => {
   return (
     <div className="setting-ctn">
       <ModalPopUp
-        handleClickEdit={handleClickEdit}
         isModalVisible={isModalVisible}
         handleCancel={handleCancel}
         onCreate={handleCreate}
         setIsModalVisible={setIsModalVisible}
+      />
+      <ModalEdit
+        isVisible={isVisible}
+        handleCancel={handleCancel}
+        setIsVisible={setIsVisible}
+        onCreate={handleClickEdit}
       />
       <Table
         className="setting-ctn__table"
