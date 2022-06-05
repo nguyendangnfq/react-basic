@@ -1,15 +1,16 @@
-import { Button, Space, Table, Tag, Typography } from "antd";
+import { Button, Popconfirm, Space, Table, Tag, Typography } from "antd";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { animalApi } from "../../api/animal";
 import "./Setting.scss";
-import { ModalPopUp } from "../../components";
+import { ModalPopUp, ModalEdit } from "../../components";
 
 const { Text } = Typography;
 
 const Setting = () => {
   const [animals, setAnimals] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   useEffect(() => {
     animalApi.getAniamal();
     animalApi.getAniamal().then((result) => {
@@ -18,52 +19,67 @@ const Setting = () => {
     });
   }, []);
 
-  const handleClickEdit = (e) => {
-    console.log(e);
+  // ----------Edit Animal----------->
+  const handleClickEdit = (values) => {
+    console.log(values);
+    setIsVisible(true);
+    // let editedAnimal = e.id;
+    // let animalIndex = animals.findIndex((item) => item.id === editedAnimal);
+
+    // if (animalIndex >= 1) {
+    //   setAnimals(animals.splice(animalIndex, 1, editedAnimal));
+    // }
   };
 
+  // -------- Delete Animal --------->
   const handleClickDelete = (e) => {
-    console.log(e);
+    console.log(e.id);
+    animalApi.deleteAniamal(e.id);
+    setAnimals(animals.filter((item) => item.id !== e.id));
   };
 
-  const handleViewModal = (e) => {
-    console.log(e);
+  const handleOpenModal = (e) => {
     setIsModalVisible(true);
   };
 
-  const handleOk = () => {
+  //------- Create New Animal ------->
+  const handleCreate = (values) => {
     setIsModalVisible(false);
+
+    console.log(values);
+    const newData = {
+      id: data.length + 1,
+      name: values.name,
+      age: values.age,
+      type: values.type,
+      createdAt: moment(values.createdAt).format("MM/DD/YYYY HH:mm A"),
+    };
+
+    const newAnimals = [...animals];
+    newAnimals.push(newData);
+    setAnimals(newAnimals);
+    animalApi.postAniamal(newData);
   };
 
   const handleCancel = () => {
     setIsModalVisible(false);
+    setIsVisible(false);
   };
 
   const data = animals.map((item, index) => {
     return {
       key: index,
-      id: item.id,
       createdAt: moment(item.createdAt).format("MM/DD/YYYY HH:mm A"),
-      name: item.name,
-      type: item.type,
-      age: item.age,
+      ...item,
     };
   });
-  console.log(data);
+  // console.log(data);
   const columns = [
     {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      render: (text, data) => (
-        <Text
-          onClick={() => {
-            handleViewModal(data);
-          }}
-        >
-          {text}
-        </Text>
-      ),
+      render: (text, data) => <Text>{text}</Text>,
     },
     {
       title: "Age",
@@ -71,7 +87,7 @@ const Setting = () => {
       key: "age",
     },
     {
-      title: "Create At",
+      title: "Created At",
       dataIndex: "createdAt",
       key: "createdAt",
     },
@@ -123,14 +139,17 @@ const Setting = () => {
           <Button type="primary" ghost onClick={() => handleClickEdit(data)}>
             Edit
           </Button>
-          <Button
-            danger
-            onClick={() => {
+          <Popconfirm
+            title="Are you sure？"
+            onConfirm={() => {
               handleClickDelete(data);
             }}
+            onCancel={() => console.log("nothing")}
+            okText="Yes"
+            cancelText="No"
           >
-            Delete
-          </Button>
+            <Button danger>Delete</Button>
+          </Popconfirm>
         </Space>
       ),
     },
@@ -141,16 +160,32 @@ const Setting = () => {
       <ModalPopUp
         isModalVisible={isModalVisible}
         handleCancel={handleCancel}
-        handleOk={handleOk}
+        onCreate={handleCreate}
         setIsModalVisible={setIsModalVisible}
+      />
+      <ModalEdit
+        isVisible={isVisible}
+        handleCancel={handleCancel}
+        setIsVisible={setIsVisible}
+        onCreate={handleClickEdit}
       />
       <Table
         className="setting-ctn__table"
         columns={columns}
         dataSource={data}
         pagination={{ pageSize: 7 }}
+        footer={() => (
+          <Button
+            onClick={() => {
+              handleOpenModal();
+            }}
+            style={{ width: "100%" }}
+            type="primary"
+          >
+            Add
+          </Button>
+        )}
       />
-      {/* <Button>Add</Button> */}
     </div>
   );
 };

@@ -1,17 +1,21 @@
-import React from "react";
 import { DatePicker, Form, Input, InputNumber, Modal, Select } from "antd";
+import React from "react";
 
-const ModalPopUp = (props) => {
-  const { isModalVisible, onCreate, handleCancel } = props;
+const ModalEdit = (props) => {
+  const { isVisible, handleCancel, onCreate } = props;
   const [form] = Form.useForm();
   const { Option } = Select;
 
   const dateFormat = "YYYY/MM/DD";
+
+  //   const onCreate = (values) => {
+  //     if (onCreate) return handleClickEdit(values);
+  //   };
   return (
     <>
       <Modal
         title="Basic Modal"
-        visible={isModalVisible}
+        visible={isVisible}
         onOk={() => {
           form
             .validateFields()
@@ -89,4 +93,4 @@ const ModalPopUp = (props) => {
   );
 };
 
-export default ModalPopUp;
+export default ModalEdit;

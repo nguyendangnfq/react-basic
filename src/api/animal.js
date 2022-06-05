@@ -38,7 +38,8 @@ export const animalApi = {
         }
       );
       const result = await response.json();
-      return result;
+      const data = await result;
+      return data;
     } catch (error) {
       console.log(error);
     }
@@ -66,13 +67,15 @@ export const animalApi = {
   deleteAniamal: async (params) => {
     try {
       const response = await fetch(
-        `https://629836b0f2decf5bb73d67d4.mockapi.io/animals/${params.key}`,
+        `https://629836b0f2decf5bb73d67d4.mockapi.io/animals/${params}`,
         {
           method: "DELETE",
         }
       );
+      console.log(params);
       const result = await response.json();
-      return result;
+      const data = await result;
+      return data;
     } catch (error) {
       console.log(error);
     }
