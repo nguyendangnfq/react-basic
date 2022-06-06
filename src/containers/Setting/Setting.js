@@ -9,32 +9,34 @@ const { Text } = Typography;
 
 const Setting = () => {
   const [animals, setAnimals] = useState([]);
+  const [updatedAnimal, setUpdatedAnimal] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   useEffect(() => {
-    animalApi.getAniamal();
-    animalApi.getAniamal().then((result) => {
+    animalApi.getAnimal();
+    animalApi.getAnimal().then((result) => {
       setAnimals(result);
       return result;
     });
   }, []);
 
   // ----------Edit Animal----------->
-  const handleClickEdit = (values) => {
+  const handleClickTakeDataUpdate = (values) => {
     console.log(values);
     setIsVisible(true);
-    // let editedAnimal = e.id;
-    // let animalIndex = animals.findIndex((item) => item.id === editedAnimal);
+    setUpdatedAnimal(values);
+  };
 
-    // if (animalIndex >= 1) {
-    //   setAnimals(animals.splice(animalIndex, 1, editedAnimal));
-    // }
+  const onUpdated = (values) => {
+    console.log("Received values of form: ", values);
+    animalApi.putAnimal(values);
+    setIsVisible(false);
   };
 
   // -------- Delete Animal --------->
   const handleClickDelete = (e) => {
     console.log(e.id);
-    animalApi.deleteAniamal(e.id);
+    animalApi.deleteAnimal(e.id);
     setAnimals(animals.filter((item) => item.id !== e.id));
   };
 
@@ -48,7 +50,6 @@ const Setting = () => {
 
     console.log(values);
     const newData = {
-      id: data.length + 1,
       name: values.name,
       age: values.age,
       type: values.type,
@@ -58,7 +59,7 @@ const Setting = () => {
     const newAnimals = [...animals];
     newAnimals.push(newData);
     setAnimals(newAnimals);
-    animalApi.postAniamal(newData);
+    // animalApi.postAnimal(newData);
   };
 
   const handleCancel = () => {
@@ -79,7 +80,7 @@ const Setting = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      render: (text, data) => <Text>{text}</Text>,
+      render: (text) => <Text>{text}</Text>,
     },
     {
       title: "Age",
@@ -136,7 +137,11 @@ const Setting = () => {
       key: "action",
       render: (_, data) => (
         <Space size="middle">
-          <Button type="primary" ghost onClick={() => handleClickEdit(data)}>
+          <Button
+            type="primary"
+            ghost
+            onClick={() => handleClickTakeDataUpdate(data)}
+          >
             Edit
           </Button>
           <Popconfirm
@@ -167,7 +172,8 @@ const Setting = () => {
         isVisible={isVisible}
         handleCancel={handleCancel}
         setIsVisible={setIsVisible}
-        onCreate={handleClickEdit}
+        onCreate={onUpdated}
+        updatedAnimal={updatedAnimal}
       />
       <Table
         className="setting-ctn__table"

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const animalApi = {
-  getAniamal: async () => {
+  getAnimal: async () => {
     try {
       const response = await fetch(
         "https://629836b0f2decf5bb73d67d4.mockapi.io/animals"
@@ -13,7 +13,7 @@ export const animalApi = {
     }
   },
 
-  getAniamalById: async (params) => {
+  getAnimalById: async (params) => {
     try {
       const response = await fetch(
         `https://629836b0f2decf5bb73d67d4.mockapi.io/animals/${params.id}`
@@ -25,7 +25,7 @@ export const animalApi = {
     }
   },
 
-  postAniamal: async (params) => {
+  postAnimal: async (params) => {
     try {
       const response = await fetch(
         "https://629836b0f2decf5bb73d67d4.mockapi.io/animals",
@@ -45,10 +45,10 @@ export const animalApi = {
     }
   },
 
-  putAniamal: async (params) => {
+  putAnimal: async (params) => {
     try {
       const response = await fetch(
-        "https://629836b0f2decf5bb73d67d4.mockapi.io/animals",
+        `https://629836b0f2decf5bb73d67d4.mockapi.io/animals/${params.id}`,
         {
           method: "PUT",
           headers: {
@@ -58,13 +58,15 @@ export const animalApi = {
         }
       );
       const result = await response.json();
-      return result;
+      const data = await result;
+      console.log(data);
+      return data;
     } catch (error) {
       console.log(error);
     }
   },
 
-  deleteAniamal: async (params) => {
+  deleteAnimal: async (params) => {
     try {
       const response = await fetch(
         `https://629836b0f2decf5bb73d67d4.mockapi.io/animals/${params}`,

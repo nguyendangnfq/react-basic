@@ -1,16 +1,25 @@
 import { DatePicker, Form, Input, InputNumber, Modal, Select } from "antd";
-import React from "react";
+import moment from "moment";
+import React, { useEffect } from "react";
 
 const ModalEdit = (props) => {
-  const { isVisible, handleCancel, onCreate } = props;
+  const { isVisible, handleCancel, onCreate, updatedAnimal } = props;
   const [form] = Form.useForm();
   const { Option } = Select;
 
   const dateFormat = "YYYY/MM/DD";
 
-  //   const onCreate = (values) => {
-  //     if (onCreate) return handleClickEdit(values);
-  //   };
+  // console.log(updatedAnimal);
+
+  useEffect(() => {
+    form.setFieldsValue({
+      name: updatedAnimal.name,
+      type: updatedAnimal.type,
+      createdAt: moment(updatedAnimal.createdAt),
+      age: updatedAnimal.age,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updatedAnimal]);
   return (
     <>
       <Modal
@@ -21,7 +30,7 @@ const ModalEdit = (props) => {
             .validateFields()
             .then((values) => {
               form.resetFields();
-              onCreate(values);
+              onCreate({ ...values, id: updatedAnimal.id });
             })
             .catch((info) => {
               console.log("Validate Failed:", info);
@@ -29,12 +38,7 @@ const ModalEdit = (props) => {
         }}
         onCancel={handleCancel}
       >
-        <Form
-          form={form}
-          layout="vertical"
-          name="form_in_modal"
-          initialValues={{ age: "3" }}
-        >
+        <Form form={form} layout="vertical" name="form_in_modal">
           <Form.Item
             name="name"
             label="Name"
