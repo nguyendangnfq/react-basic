@@ -5,8 +5,12 @@
     flex-direction: column;
     justify-content: center;
 
+    &__link {
+        padding: 0 5rem;
+    }
+
     &__table {
         height: 70%;
-        padding: 0 10rem;
+        padding: 0 5rem;
     }
 }

@@ -1,11 +1,22 @@
-import React, { useEffect } from "react";
+import { HomeOutlined } from "@ant-design/icons";
+import { Button, Result } from "antd";
+import React from "react";
 import { Link } from "react-router-dom";
+import "./Home.scss";
 const Home = () => {
   return (
-    <>
-      <h1>This is home page</h1>
-      <Link to="/login">login</Link>
-    </>
+    <div className="home">
+      <Result
+        icon={<HomeOutlined />}
+        title="WELCOME TO HOME PAGE!"
+        extra={
+          <Button>
+            {" "}
+            <Link to="/login">Login</Link>
+          </Button>
+        }
+      />
+    </div>
   );
 };
 

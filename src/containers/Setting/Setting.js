@@ -1,9 +1,21 @@
-import { Button, Popconfirm, Space, Table, Tag, Typography } from "antd";
+import {
+  Button,
+  message,
+  Popconfirm,
+  Space,
+  Spin,
+  Table,
+  Tag,
+  Typography,
+} from "antd";
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { animalApi } from "../../api/animal";
 import "./Setting.scss";
 import { ModalPopUp, ModalEdit } from "../../components";
+import { GlobalDataContext } from "../../components/GlobalDataProvider";
+import { LoadingOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
 
 const { Text } = Typography;
 
@@ -12,10 +24,15 @@ const Setting = () => {
   const [updatedAnimal, setUpdatedAnimal] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const { loading, setLoading } = useContext(GlobalDataContext);
+
+  const antIcon = <LoadingOutlined style={{ fontSize: 24 }} />;
+
   useEffect(() => {
     animalApi.getAnimal();
     animalApi.getAnimal().then((result) => {
       setAnimals(result);
+      setLoading(false);
       return result;
     });
   }, []);
@@ -28,9 +45,18 @@ const Setting = () => {
   };
 
   const onUpdated = (values) => {
-    console.log("Received values of form: ", values);
-    animalApi.putAnimal(values);
+    const newValues = {
+      ...values,
+      // createdAt: moment(values.createdAt).format("MM/DD/YYYY HH:mm A"),
+    };
+    console.log(newValues);
+    const newAnimal = Array.from(animals);
+    const animalIndex = newAnimal.findIndex((item) => item.id === newValues.id);
+    newAnimal.splice(animalIndex, 1, newValues);
+    setAnimals(newAnimal);
     setIsVisible(false);
+    animalApi.putAnimal(newValues);
+    message.success("Updated Successful!");
   };
 
   // -------- Delete Animal --------->
@@ -38,6 +64,7 @@ const Setting = () => {
     console.log(e.id);
     animalApi.deleteAnimal(e.id);
     setAnimals(animals.filter((item) => item.id !== e.id));
+    message.success("Deleted Successful!");
   };
 
   const handleOpenModal = (e) => {
@@ -59,7 +86,8 @@ const Setting = () => {
     const newAnimals = [...animals];
     newAnimals.push(newData);
     setAnimals(newAnimals);
-    // animalApi.postAnimal(newData);
+    message.success("Success!");
+    animalApi.postAnimal(newData);
   };
 
   const handleCancel = () => {
@@ -69,12 +97,12 @@ const Setting = () => {
 
   const data = animals.map((item, index) => {
     return {
+      ...item,
       key: index,
       createdAt: moment(item.createdAt).format("MM/DD/YYYY HH:mm A"),
-      ...item,
+      type: item.type.toLowerCase(),
     };
   });
-  // console.log(data);
   const columns = [
     {
       title: "Name",
@@ -108,7 +136,7 @@ const Setting = () => {
           case "dog":
             color = "violet";
             break;
-          case "horse":
+          case "cat":
             color = "pink";
             break;
           case "crocodilia":
@@ -175,23 +203,28 @@ const Setting = () => {
         onCreate={onUpdated}
         updatedAnimal={updatedAnimal}
       />
-      <Table
-        className="setting-ctn__table"
-        columns={columns}
-        dataSource={data}
-        pagination={{ pageSize: 7 }}
-        footer={() => (
-          <Button
-            onClick={() => {
-              handleOpenModal();
-            }}
-            style={{ width: "100%" }}
-            type="primary"
-          >
-            Add
-          </Button>
-        )}
-      />
+      <Spin indicator={antIcon} spinning={loading}>
+        <Link to="/:id" className="setting-ctn__link">
+          Back
+        </Link>
+        <Table
+          className="setting-ctn__table"
+          columns={columns}
+          dataSource={data}
+          pagination={{ pageSize: 7 }}
+          footer={() => (
+            <Button
+              onClick={() => {
+                handleOpenModal();
+              }}
+              style={{ width: "100%" }}
+              type="primary"
+            >
+              Add
+            </Button>
+          )}
+        />
+      </Spin>
     </div>
   );
 };
