@@ -7,6 +7,7 @@ const Home = () => {
   return (
     <div className="home">
       <Result
+        className="home__result"
         icon={<HomeOutlined />}
         title="WELCOME TO HOME PAGE!"
         extra={
