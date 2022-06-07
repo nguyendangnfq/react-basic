@@ -7,8 +7,6 @@ const ModalEdit = (props) => {
   const [form] = Form.useForm();
   const { Option } = Select;
 
-  const dateFormat = "YYYY/MM/DD";
-
   // console.log(updatedAnimal);
 
   useEffect(() => {
@@ -76,7 +74,7 @@ const ModalEdit = (props) => {
               { required: true, message: "Please input the date of born!" },
             ]}
           >
-            <DatePicker format={dateFormat} />
+            <DatePicker />
           </Form.Item>
 
           <Form.Item

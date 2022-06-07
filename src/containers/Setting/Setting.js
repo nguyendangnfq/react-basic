@@ -62,8 +62,8 @@ const Setting = () => {
   // -------- Delete Animal --------->
   const handleClickDelete = (e) => {
     console.log(e.id);
-    animalApi.deleteAnimal(e.id);
     setAnimals(animals.filter((item) => item.id !== e.id));
+    animalApi.deleteAnimal(e.id);
     message.success("Deleted Successful!");
   };
 
@@ -80,7 +80,7 @@ const Setting = () => {
       name: values.name,
       age: values.age,
       type: values.type,
-      createdAt: moment(values.createdAt).format("MM/DD/YYYY HH:mm A"),
+      createdAt: moment(values.createdAt),
     };
 
     const newAnimals = [...animals];
