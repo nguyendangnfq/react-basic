@@ -6,3 +6,5 @@ Follow below steps to run project
 2. Run ```npm i``` command to install dependencies
 3. Execute ```npm start``` command to run the project
 
+## Deployment 
+https://monumental-lebkuchen-e443ab.netlify.app/
